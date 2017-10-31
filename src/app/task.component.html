@@ -1,0 +1,55 @@
+<div align="center"><h1>Spring Boot with Angular 2 CRUD Operation</h1>
+<h3 *ngIf="taskIdToUpdate; else create"> 
+   Update Task for Id: {{idToUpdate}}
+</h3>
+<ng-template #create>
+   <h3> Create New Task </h3>
+</ng-template>
+<div>
+ <form [formGroup]="taskForm" (ngSubmit)="onTaskFormSubmit()">
+  <table>
+    <tr><td>Enter Title</td><td><input formControlName="title">
+	       <label *ngIf="taskForm.get('title').invalid && processValidation" [ngClass] = "'error'"> Title is required. </label>
+   	</td></tr>
+    <tr><td>Enter Status</td><td><input formControlName="status">
+	       <label *ngIf="taskForm.get('status').invalid && processValidation" [ngClass] = "'error'"> Status is required. </label>
+	</td></tr>	
+    <tr><td colspan="2">
+	    <button *ngIf="!idToUpdate">CREATE</button>  
+		<button *ngIf="idToUpdate">UPDATE</button>  
+	    <button (click)="backToCreateTask()" *ngIf="idToUpdate">Go Back</button>  
+	</td></tr>
+  </table>
+ </form> 
+ <br/>
+ <div *ngIf="statusCode; else processing">
+   <div *ngIf="statusCode === 201" [ngClass] = "'success'">
+	    Task added successfully.
+   </div>   
+   <div *ngIf="statusCode === 409" [ngClass] = "'success'">
+        Task already exists.
+   </div>   	
+   <div *ngIf="statusCode === 200" [ngClass] = "'success'">
+        Task updated successfully.
+   </div>   	      
+   <div *ngIf="statusCode === 204" [ngClass] = "'success'">
+        Task deleted successfully.
+   </div>   	   
+   <div *ngIf="statusCode === 500" [ngClass] = "'error'">
+        Internal Server Error.
+   </div>   	
+ </div>
+ <ng-template #processing>
+	<img *ngIf="requestProcessing" src="assets/images/loading.gif">
+ </ng-template>
+</div>
+<h3>Task Details</h3>
+<table>
+  <tr><th> Id</th> <th>Title</th><th>Status</th><th></th><th></th></tr>
+  <tr *ngFor="let task of allTask" >
+    <td>{{task.id}}</td> <td>{{task.title}}</td> <td>{{task.status}}</td>
+	<td><button type="button" (click)="loadTaskToEdit(task.id)">Edit</button> </td> 
+	<td><button type="button" (click)="deleteTask(task.id)">Delete</button></td>
+  </tr>
+</table>
+</div>
